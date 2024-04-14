@@ -6,22 +6,22 @@ const InputData = ({ InputDiv, setInputDiv }) => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [priority, setPriority] = useState("");
-    const [createDate, setDueDate] = useState("");
-    const [collaborator, setCollaborator] = useState("");
-    const [createdBy, setCreatedBy] = useState(""); // New state for createdBy
+    //const [createDate, setDueDate] = useState("");
+    //const [collaborator, setCollaborator] = useState("");
+    const [taskId, setTaskId] = useState(""); // New state for createdBy
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         try {
-            const response = await axios.post('https://localhost:7240/Task', {
+            const response = await axios.post('http://localhost:7240/Task', {
                 title,
                 description,
                 priority,
-                createDate,
-                collaborator,
-                createdBy // Pass createdBy in the request
-            });
+                //collaborator,
+
+               
+            },{params:(taskId)}); 
 
             console.log(response.data); // Log the response from the backend
             // Optionally, you can handle the response further, e.g., show a success message to the user
@@ -49,6 +49,13 @@ const InputData = ({ InputDiv, setInputDiv }) => {
                             onChange={(e) => setTitle(e.target.value)}
                             className='px-3 py-2 rounded w-full bg-gray-700 my-3'
                         />
+                        <input
+                            type='taskId'
+                            placeholder='Task Id '
+                            value={taskId}
+                            onChange={(e) => setTaskId(e.target.value)}
+                            className='px-3 py-2 rounded w-full bg-gray-700 my-3'
+                        />
                         <textarea
                             placeholder='Description...'
                             value={description}
@@ -66,26 +73,19 @@ const InputData = ({ InputDiv, setInputDiv }) => {
                             <option value="medium">Medium</option>
                             <option value="low">Low</option>
                         </select>
-                        <input
+                        {/* <input
                             type='date'
                             value={createDate}
                             onChange={(e) => setDueDate(e.target.value)}
                             className='px-3 py-2 rounded w-full bg-gray-700 my-3'
-                        />                       
-                        <input
-                            type='text'
-                            placeholder='Created By' // Add input field for createdBy
-                            value={createdBy}
-                            onChange={(e) => setCreatedBy(e.target.value)}
-                            className='px-3 py-2 rounded w-full bg-gray-700 my-3'
-                        />
-                         <input
+                        />                        */}
+                         {/* <input
                             type='text'
                             placeholder='Collaborator'
                             value={collaborator}
                             onChange={(e) => setCollaborator(e.target.value)}
                             className='px-3 py-2 rounded w-full bg-gray-700 my-3'
-                        />
+                        /> */}
                         <button type="submit" className='px-3 py-2 bg-blue-400 rounded text-black text-xl font-semibold my-3'>Submit</button>
                     </form>
                 </div>
