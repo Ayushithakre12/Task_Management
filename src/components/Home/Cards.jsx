@@ -5,7 +5,7 @@ import { RiDeleteBin7Line } from "react-icons/ri";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import axios from 'axios';
 
-const Cards = ({ home, setInputDiv, route }) => {
+const Cards = ({ home, setInputDiv, route, searchTerm }) => {
     const [allTask, setAllTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -49,8 +49,13 @@ const Cards = ({ home, setInputDiv, route }) => {
     };
     // Filter tasks based on the route
     const filteredTasks = route === "importantTasks"
-        ? allTask.filter(task => task.priority === "high")
-        : allTask;
+    ? allTask.filter(task => task.priority === "high") // Filter by priority
+    : allTask.filter(task => {
+      const searchTermLower = searchTerm.toLowerCase();
+      return task.name.toLowerCase().includes(searchTermLower) ||
+             task.description?.toLowerCase().includes(searchTermLower);
+    }); 
+  
 
     if (loading) {
         return <div>Loading...</div>;
