@@ -5,7 +5,7 @@ import { RiDeleteBin7Line } from "react-icons/ri";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import axios from 'axios';
 
-const Cards = ({ home, setInputDiv }) => {
+const Cards = ({ home, setInputDiv, route }) => {
     const [allTask, setAllTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -35,20 +35,23 @@ const Cards = ({ home, setInputDiv }) => {
 
     const deleteTask = async (taskId) => {
         try {
-          const response = await axios.delete(`https://localhost:7240/Task?taskId=${taskId}`);
-          if (!response.data.errorMessage) {
-            // If there is no error message, update state to reflect successful deletion
-            setAllTasks(allTask.filter(task => task.id !== taskId));
-          } else {
-            setError('Error deleting task.');
-          }
+            const response = await axios.delete(`https://localhost:7240/Task?taskId=${taskId}`);
+            if (!response.data.errorMessage) {
+                // If there is no error message, update state to reflect successful deletion
+                setAllTasks(allTask.filter(task => task.id !== taskId));
+            } else {
+                setError('Error deleting task.');
+            }
         } catch (error) {
-          console.error('Error deleting task:', error.message);
-          setError('Error deleting task. Please try again later.');
+            console.error('Error deleting task:', error.message);
+            setError('Error deleting task. Please try again later.');
         }
-      };
-      
-     
+    };
+    // Filter tasks based on the route
+    const filteredTasks = route === "importantTasks"
+        ? allTask.filter(task => task.priority === "high")
+        : allTask;
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -59,7 +62,7 @@ const Cards = ({ home, setInputDiv }) => {
 
     return (
         <div className='grid grid-cols-3 gap-4 p-4 hover:cursor-pointer transition-all duration-300'>
-            {allTask.map((task) => (
+            {filteredTasks.map((task) => (
                 <div key={task.id} className='flex flex-col justify-between bg-gray-800 rounded p-4'>
                     <div>
                         <h3 className='text-xl font-semibold'>{task.name}</h3>

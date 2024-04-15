@@ -43,10 +43,10 @@ const ImportantTasks = () => {
 
   return (
     <div>
-      <Cards tasks={highPriorityTasks} filterByPriority="high" />
+      {/* Pass the route prop to Cards component */}
+      <Cards tasks={highPriorityTasks} route="importantTasks" />
     </div>
   );
 }
-
 
 export default ImportantTasks;
