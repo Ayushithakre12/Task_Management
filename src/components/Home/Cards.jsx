@@ -5,7 +5,7 @@ import { RiDeleteBin7Line } from "react-icons/ri";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import axios from 'axios';
 
-const Cards = ({ home, setInputDiv, route, searchTerm }) => {
+const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus }) => {
     const [allTask, setAllTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -47,15 +47,25 @@ const Cards = ({ home, setInputDiv, route, searchTerm }) => {
             setError('Error deleting task. Please try again later.');
         }
     };
-    // Filter tasks based on the route
-    const filteredTasks = route === "importantTasks"
-    ? allTask.filter(task => task.priority === "high") // Filter by priority
-    : allTask.filter(task => {
-      const searchTermLower = searchTerm.toLowerCase();
-      return task.name.toLowerCase().includes(searchTermLower) ||
-             task.description?.toLowerCase().includes(searchTermLower);
-    }); 
-  
+
+    const filteredTasks = (route === "importantTasks" && allTask.filter(task => task.priority === "high")) ||
+        (route === "completedTasks" && allTask.filter(task => task.iscomplete === true)) ||
+        (route === "incompletedTasks" && allTask.filter(task => task.iscomplete === false)) ||
+        allTask.filter(task => {
+            const searchTermLower = searchTerm.toLowerCase();
+            const taskNameLower = task.name.toLowerCase();
+            const taskDescriptionLower = task.description ? task.description.toLowerCase() : '';
+
+            let isIncluded = taskNameLower.includes(searchTermLower) ||
+                taskDescriptionLower.includes(searchTermLower);
+
+            // Filter by selected status (if any)
+            if (selectedStatus) {
+                isIncluded = isIncluded && (task.iscomplete === (selectedStatus === 'completed'));
+            }
+
+            return isIncluded;
+        });
 
     if (loading) {
         return <div>Loading...</div>;

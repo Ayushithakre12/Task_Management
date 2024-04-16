@@ -4,21 +4,25 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import InputData from '../components/Home/InputData';
 import SearchBar from '../components/SearchBar';
 import axios from 'axios';
+import DateFilter from '../components/DateFilter';
+import StatusFilter from '../components/StatusFilter';
 
 const AllTasks = () => {
   const [InputDiv, setInputDiv] = useState("hidden");
   const [tasks, setTasks] = useState([]);
-  // No longer needed with in-line search: const [filteredTasks, setFilteredTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState(''); 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          'https://localhost:7240/Task?search=null&status=null'
-        );
+        let url = 'https://localhost:7240/Task?search=null&status=null';
+        if (selectedStatus) {
+          url = `https://localhost:7240/Task?search=null&status=${selectedStatus === 'completed' ? 'true' : 'false'}`;
+        }
+        const response = await axios.get(url);
         if (response.data && response.data.allTask) {
           setTasks(response.data.allTask);
           setLoading(false);
@@ -28,6 +32,8 @@ const AllTasks = () => {
       } catch (error) {
         console.error('Error fetching tasks:', error.message);
         setError('Error fetching tasks. Please try again later.');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -36,7 +42,7 @@ const AllTasks = () => {
     return () => {
       // Cleanup function if needed
     };
-  }, []);
+  }, [selectedStatus]);
 
   const handleSearch = async (searchTerm) => {
     setSearchTerm(searchTerm);
@@ -58,6 +64,9 @@ const AllTasks = () => {
       }
     }
   };
+  const handleStatusChange = (newSelectedStatus) => {
+    setSelectedStatus(newSelectedStatus);
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -71,6 +80,8 @@ const AllTasks = () => {
     <>
       <div>
         <div className='w-full flex justify-center'>
+          <DateFilter/>
+          <StatusFilter onStatusChange={handleStatusChange}/>
           <SearchBar onSearch={handleSearch} />
         </div>
         <div className='w-full flex justify-end px-4 py-2'>
@@ -78,7 +89,7 @@ const AllTasks = () => {
             <IoMdAddCircleOutline className='text-4xl text-gray-400 hover:text-gray-100 transition-all duration-300 ' />
           </button>
         </div>
-        <Cards tasks={tasks} home={"true"} searchTerm={searchTerm}  setInputDiv={setInputDiv}  /> 
+        <Cards tasks={tasks} home={"true"} searchTerm={searchTerm} selectedStatus={selectedStatus} setInputDiv={setInputDiv}  /> 
       </div>
       <InputData InputDiv={InputDiv} setInputDiv={setInputDiv} />
     </>

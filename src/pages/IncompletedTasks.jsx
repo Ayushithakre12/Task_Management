@@ -1,10 +1,10 @@
 import React from 'react'
 import Cards from '../components/Home/Cards'
 
-const IncompletedTasks = () => {
+const IncompletedTasks = () => {  
   return (
     <div>
-      <Cards home={"false"}/>
+      <Cards home={"false"} route="incompletedTasks"/>
     </div>
   )
 }
