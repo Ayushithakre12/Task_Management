@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const DateFilter = ({ tasks, onFilter }) => {
+const DateFilter = ({ onFilter }) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
@@ -14,23 +14,7 @@ const DateFilter = ({ tasks, onFilter }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    const filteredTasks = tasks.filter((task) => {
-      const taskDate = new Date(task.date); // Assuming 'date' property exists in tasks
-      const startDateObj = startDate ? new Date(startDate) : null;
-      const endDateObj = endDate ? new Date(endDate) : null;
-
-      if (!startDateObj && !endDateObj) {
-        return true; // No filter applied, return all tasks
-      }
-
-      return (
-        (!startDateObj || taskDate >= startDateObj) &&
-        (!endDateObj || taskDate <= endDateObj)
-      );
-    });
-
-    onFilter(filteredTasks); // Pass filtered tasks to parent component
+    onFilter(startDate, endDate);
   };
 
   return (
@@ -55,7 +39,7 @@ const DateFilter = ({ tasks, onFilter }) => {
           className="border rounded  text-black px-2 py-1"
         />
       </div>
-      <button type="submit" className="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded mt-2">
+      <button type="submit" className="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded mt-2 ">
         Filter
       </button>
     </form>

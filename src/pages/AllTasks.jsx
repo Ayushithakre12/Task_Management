@@ -13,7 +13,9 @@ const AllTasks = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState(''); 
+  const [selectedStatus, setSelectedStatus] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,8 +48,8 @@ const AllTasks = () => {
 
   const handleSearch = async (searchTerm) => {
     setSearchTerm(searchTerm);
-    if (searchTerm === '') { 
-      setTasks(tasks); 
+    if (searchTerm === '') {
+      setTasks(tasks);
     } else {
       try {
         const response = await axios.get(
@@ -56,14 +58,33 @@ const AllTasks = () => {
         if (response.data && response.data.allTask) {
           setTasks(response.data.allTask);
         } else {
-          setTasks([]); 
+          setTasks([]);
         }
       } catch (error) {
         console.error('Error searching tasks:', error.message);
-        setTasks([]); 
+        setTasks([]);
       }
     }
   };
+
+  const handleDateFilter = async (startDate, endDate) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    try {
+        const response = await axios.get(
+            `https://localhost:7240/Task?status=null&year=${new Date(startDate).getFullYear()}&month=${new Date(startDate).getMonth() + 1}&day=${new Date(startDate).getDate()}&search=null`
+        );
+        if (response.data && response.data.allTask) {
+            setTasks(response.data.allTask);
+        } else {
+            setTasks([]);
+        }
+    } catch (error) {
+        console.error('Error filtering tasks by date:', error.message);
+        setTasks([]);
+    }
+};
+
   const handleStatusChange = (newSelectedStatus) => {
     setSelectedStatus(newSelectedStatus);
   };
@@ -79,17 +100,15 @@ const AllTasks = () => {
   return (
     <>
       <div>
-        <div className='w-full flex justify-center'>
-          <DateFilter/>
-          <StatusFilter onStatusChange={handleStatusChange}/>
+        <div className='w-full flex justify-between px-4 py-2'>
+          <DateFilter  onFilter={handleDateFilter}/>
+          <StatusFilter onStatusChange={handleStatusChange} />
           <SearchBar onSearch={handleSearch} />
-        </div>
-        <div className='w-full flex justify-end px-4 py-2'>
           <button onClick={() => setInputDiv("fixed")}>
             <IoMdAddCircleOutline className='text-4xl text-gray-400 hover:text-gray-100 transition-all duration-300 ' />
           </button>
         </div>
-        <Cards tasks={tasks} home={"true"} searchTerm={searchTerm} selectedStatus={selectedStatus} setInputDiv={setInputDiv}  /> 
+        <Cards tasks={tasks} home={"true"} searchTerm={searchTerm} selectedStatus={selectedStatus} setInputDiv={setInputDiv} startDate={startDate} endDate={endDate} />
       </div>
       <InputData InputDiv={InputDiv} setInputDiv={setInputDiv} />
     </>

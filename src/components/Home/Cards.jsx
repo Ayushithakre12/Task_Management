@@ -5,7 +5,7 @@ import { RiDeleteBin7Line } from "react-icons/ri";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import axios from 'axios';
 
-const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus }) => {
+const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus, startDate, endDate }) => {
     const [allTask, setAllTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -52,19 +52,29 @@ const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus }) => {
         (route === "completedTasks" && allTask.filter(task => task.iscomplete === true)) ||
         (route === "incompletedTasks" && allTask.filter(task => task.iscomplete === false)) ||
         allTask.filter(task => {
-            const searchTermLower = searchTerm.toLowerCase();
-            const taskNameLower = task.name.toLowerCase();
-            const taskDescriptionLower = task.description ? task.description.toLowerCase() : '';
+            const taskDate = task.createdDate ? new Date(task.createdDate) : null;
 
-            let isIncluded = taskNameLower.includes(searchTermLower) ||
-                taskDescriptionLower.includes(searchTermLower);
+            // Check if the task falls within the selected date range
+            const isWithinSelectedDate = (!startDate || !taskDate || taskDate.toDateString() === new Date(startDate).toDateString());
+
+            let isIncluded = true;
+
+            // Filter by search term
+            if (searchTerm) {
+                const searchTermLower = searchTerm.toLowerCase();
+                const taskNameLower = task.name.toLowerCase();
+                const taskDescriptionLower = task.description ? task.description.toLowerCase() : '';
+
+                isIncluded = taskNameLower.includes(searchTermLower) ||
+                    taskDescriptionLower.includes(searchTermLower);
+            }
 
             // Filter by selected status (if any)
             if (selectedStatus) {
                 isIncluded = isIncluded && (task.iscomplete === (selectedStatus === 'completed'));
             }
 
-            return isIncluded;
+            return isWithinSelectedDate && isIncluded;
         });
 
     if (loading) {

@@ -10,12 +10,12 @@ const StatusFilter = ({ onStatusChange }) => {   // Receive onStatusChange prop
 
   return (
     <div className="flex items-center">
-      <label htmlFor="status" className="mr-2 text-base text-white font-medium">Status:</label>
+      <label htmlFor="status" className="mr-2 text-base font-medium">Status:</label>
       <select
         id="status"
         value={selectedStatus}
         onChange={handleStatusChange}
-        className="border rounded px-2 py-1 bg-gray-500  text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        className="border rounded  px-2 py-1 bg-gray-500 w-11/12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
       >
         <option value="">All</option>
         <option value="completed">Completed</option>
