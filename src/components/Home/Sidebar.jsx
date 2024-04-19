@@ -1,10 +1,26 @@
-import React from 'react'
+import React from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { CgNotes } from "react-icons/cg";
 import { MdLabelImportant } from "react-icons/md";
 import { FaCheckDouble } from "react-icons/fa6";
 import { TbNotebookOff } from "react-icons/tb";
 import { Link } from 'react-router-dom';
+
 const Sidebar = () => {
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await axios.put('https://localhost:7240/Login');
+            localStorage.removeItem('token'); // Clear token from local storage
+            navigate('/login'); // Redirect to login page
+        } catch (error) {
+            console.error('Error logging out:', error);
+            // Handle error if needed
+        }
+    };
+
     const data = [
         {
             title: "All task",
@@ -26,7 +42,8 @@ const Sidebar = () => {
             icon: <TbNotebookOff />,
             link: "/incompletedTasks",
         },
-    ]
+    ];
+
     return (
         <>
             <div>
@@ -35,20 +52,21 @@ const Sidebar = () => {
                 <hr />
             </div>
             <div>
-                {data.map((items, i) => (
+                {data.map((item, index) => (
                     <Link
-                        to={items.link}
-                        key={i}
-                        className='my-2 flex items-center hover:bg-gray-600 py-2 rounded transition-all duration-300'>
-                        {items.icon}{items.title}
+                        to={item.link}
+                        key={index}
+                        className='my-2 flex items-center hover:bg-gray-600 py-2 rounded transition-all duration-300'
+                    >
+                        {item.icon}{item.title}
                     </Link>
                 ))}
             </div>
             <div>
-                <button className='bg-gray-600 w-full p-2 rounded'>Log Out</button>
+                <button onClick={handleLogout} className='bg-gray-600 w-full p-2 rounded'>Log Out</button>
             </div>
         </>
-    )
-}
+    );
+};
 
 export default Sidebar;

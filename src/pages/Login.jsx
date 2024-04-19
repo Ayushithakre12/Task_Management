@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState(""); // State for error message
+    const navigate = useNavigate(); 
 
     const onSubmit = async (event) => {
         event.preventDefault();
         
         try {
-            const response = await axios.post('https://localhost:7240/Login', {
-                username,
-                password
+            const response = await axios.post('https://localhost:7240/Login', null, {
+                params: {
+                    username,
+                    password
+                }
             });
 
-            // Assuming your backend returns some data upon successful login
             // For example, if it returns a token, you can store it in localStorage
-            localStorage.setItem('token', response.data.token);
+            //localStorage.setItem('token', response.data.token);
 
-            // Redirect or perform any other action upon successful login
-            console.log(response);
+            if (response.data.sucessMessage) {
+                navigate('/');
+            } else {
+                // If login is unsuccessful, set error message
+                setErrorMessage("Username and password don't match.");
+            }
         } catch (error) {
-            
             console.error(error.message);
-            // Handle login error, e.g., display error message to the user
+            // Handle other errors if needed
         }
     };
 
@@ -51,6 +58,9 @@ const Login = () => {
                             Login
                         </button>
                     </div>
+                    {errorMessage && ( 
+                        <div className="text-red-500 text-center">{errorMessage}</div>
+                    )}
                     <div className="text-sm text-white py-2">
                         <a href='#' className="text-indigo-400 hover:text-indigo-500 font-semibold text-large mr-10 text-left"> Forget Password </a>
                         <p className="font-medium inline-block text-right text-large mr-10"> Don't have an account? </p>

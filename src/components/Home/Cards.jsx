@@ -55,37 +55,37 @@ const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus, startDate
 
     const handleUpdateTask = async (updatedTask) => {
         try {
-          const response = await axios.post(`https://localhost:7240/Task?taskId=${updatedTask.id}`, updatedTask);
-          if (response.data && response.data.success) {
-            // Update state efficiently to reflect the updated task
-            const updatedTasks = allTask.map(task => (task.id === updatedTask.id ? updatedTask : task));
-            setAllTasks(updatedTasks);
-            setEditTaskOpen(false);
-          } else {
-            setError(response.data.errorMessage && 'Error updating task.');
-          }
+            const response = await axios.post(`https://localhost:7240/Task?taskId=${updatedTask.id}`, updatedTask);
+            if (response.data && response.data.success) {
+                // Update state to reflect the updated task
+                const updatedTasks = allTask.map(task => (task.id === updatedTask.id ? updatedTask : task));
+                setAllTasks(updatedTasks);
+                setEditTaskOpen(false);
+            } else {
+                setError(response.data.errorMessage && 'Error updating task.');
+            }
         } catch (error) {
-          console.error('Error updating task:', error.message);
-          setError('Error updating task. Please try again later.');
+            console.error('Error updating task:', error.message);
+            setError('Error updating task. Please try again later.');
         }
-      };
+    };
     
-      const handleAddTask = async (newTask) => {
+    const handleAddTask = async (newTask) => {
         try {
-          const response = await axios.post('https://localhost:7240/Task?taskId=null', newTask);
-          if (response.data && response.data.success) {
-            // Update state directly to add the new task and reflect it immediately
-            setAllTasks([...allTask, response.data.task]);
-            setEditTaskOpen(false);
-          } else {
-            setError('Error adding task.');
-          }
+            const response = await axios.post('https://localhost:7240/Task?taskId=null', newTask);
+            if (response.data && response.data.success) {
+                // Update state directly to add the new task and reflect it immediately
+                setAllTasks([...allTask, response.data.task]);
+                setEditTaskOpen(false);
+            } else {
+                setError('Error adding task.');
+            }
         } catch (error) {
-          console.error('Error adding task:', error.message);
-          setError('Error adding task. Please try again later.');
+            console.error('Error adding task:', error.message);
+            setError('Error adding task. Please try again later.');
         }
-      };
-
+    };
+       
     const handleEditTask = (task) => {
         setSelectedTask(task); // Set the selected task for editing
         setEditTaskOpen(true); // Open the edit form

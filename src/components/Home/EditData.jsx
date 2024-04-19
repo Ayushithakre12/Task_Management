@@ -64,6 +64,13 @@ const EditData = ({ task, onClose, onUpdate, onAdd }) => {
                         <option value="medium">Medium</option>
                         <option value="low">Low</option>
                     </select>
+                    <select
+                        className="mt-1 block w-full pl-3 pr-10 py-2 bg-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded my-3"
+                    >
+                        <option>Collabration</option>
+                        <option>Ayushi</option>
+                        <option>xyz</option>
+                    </select>
                     <div className="flex items-center my-3">
                         <input
                             type="checkbox"
