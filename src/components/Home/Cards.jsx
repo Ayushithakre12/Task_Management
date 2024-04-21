@@ -1,49 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FcHighPriority } from "react-icons/fc";
 import { BiEdit } from "react-icons/bi";
 import { RiDeleteBin7Line } from "react-icons/ri";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import TaskDetails from './TaskDetails'
 import EditData from './EditData';
+import ConfirmationScreen from './ConfirmationScreen';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
-const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus, startDate, endDate }) => {
-    const [allTask, setAllTasks] = useState([]);
-    const [loading, setLoading] = useState(true);
+
+const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selectedStatus, startDate, endDate }) => {
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
     const [editTaskOpen, setEditTaskOpen] = useState(false);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('https://localhost:7240/Task?search=null&status=null');
-                if (response.data && response.data.allTask) {
-                    setAllTasks(response.data.allTask);
-                    setLoading(false);
-                } else {
-                    setError('No tasks found.');
-                }
-            } catch (error) {
-                console.error('Error fetching tasks:', error.message);
-                setError('Error fetching tasks. Please try again later.');
-            }
-        };
-
-        fetchData();
-
-        return () => {
-            // Cleanup function if needed
-        };
-    }, []);
+    const [confirmDelete, setConfirmDelete] = useState(false);  
+    const navigate = useNavigate();    
 
     const deleteTask = async (taskId) => {
         try {
             const response = await axios.delete(`https://localhost:7240/Task?taskId=${taskId}`);
             if (!response.data.errorMessage) {
                 // If there is no error message, update state to reflect successful deletion
-                setAllTasks(allTask.filter(task => task.id !== taskId));
-                setSelectedTask(null); // Clear the selected task
+                setTasks([...tasks.filter(task => task.id !== taskId)]);
+                toast.success('Task deleted successfully!');
+                setSelectedTask(null); 
             } else {
                 setError('Error deleting task.');
             }
@@ -56,10 +40,9 @@ const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus, startDate
     const handleUpdateTask = async (updatedTask) => {
         try {
             const response = await axios.post(`https://localhost:7240/Task?taskId=${updatedTask.id}`, updatedTask);
-            if (response.data && response.data.success) {
+            if (response.data && response.data.sucess) {
                 // Update state to reflect the updated task
-                const updatedTasks = allTask.map(task => (task.id === updatedTask.id ? updatedTask : task));
-                setAllTasks(updatedTasks);
+                navigate(0);
                 setEditTaskOpen(false);
             } else {
                 setError(response.data.errorMessage && 'Error updating task.');
@@ -73,9 +56,9 @@ const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus, startDate
     const handleAddTask = async (newTask) => {
         try {
             const response = await axios.post('https://localhost:7240/Task?taskId=null', newTask);
-            if (response.data && response.data.success) {
+            if (response.data && response.data.sucess) {
                 // Update state directly to add the new task and reflect it immediately
-                setAllTasks([...allTask, response.data.task]);
+                setTasks([...tasks, response.data.task]);
                 setEditTaskOpen(false);
             } else {
                 setError('Error adding task.');
@@ -101,11 +84,19 @@ const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus, startDate
         setEditTaskOpen(false); // Close the edit form
         setSelectedTask(null); // Clear the selected task
     };
+    const handleConfirmDelete = () => {
+        deleteTask(selectedTask.id);
+        setConfirmDelete(false);
+    };
 
-    const filteredTasks = (route === "importantTasks" && allTask.filter(task => task.priority === "high")) ||
-        (route === "completedTasks" && allTask.filter(task => task.iscomplete === true)) ||
-        (route === "incompletedTasks" && allTask.filter(task => task.iscomplete === false)) ||
-        allTask.filter(task => {
+    const handleCancelDelete = () => {
+        setConfirmDelete(false);
+    };
+
+    const filteredTasks = (route === "importantTasks" && tasks.filter(task => task.priority === "high")) ||
+        (route === "completedTasks" && tasks.filter(task => task.iscomplete === true)) ||
+        (route === "incompletedTasks" && tasks.filter(task => task.iscomplete === false)) ||
+        tasks.filter(task => {
             const taskDate = task.createdDate ? new Date(task.createdDate) : null;
 
             // Check if the task falls within the selected date range
@@ -155,13 +146,13 @@ const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus, startDate
                             {task.iscomplete ? "Completed" : "Incomplete"}
                         </button>
                         <div className='text-white p-2 w-3/6 text-2xl font-semibold flex justify-around'>
-                            <button onClick={() => handleEditTask(task)}>
+                           <button onClick={() => handleEditTask(task)}>
                                 <BiEdit />
                             </button>
                             <button className={`${task.priority === "high" ? "bg-red-400" : (task.priority === "medium" ? "bg-yellow-400" : "bg-green-400")} p-2 rounded w-1.5/6 items-center`}>
                                 <FcHighPriority />
                             </button>
-                            <button onClick={() => deleteTask(task.id)}>
+                            <button onClick={() => setConfirmDelete(true)}>
                                 <RiDeleteBin7Line />
                             </button>
                         </div>
@@ -178,6 +169,7 @@ const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus, startDate
                     onAdd={handleAddTask} // Pass the handleAddTask function to EditData
                 />
             )}
+             {confirmDelete && <ConfirmationScreen onCancel={handleCancelDelete} onConfirm={handleConfirmDelete} />}
             {home === "true" && (
                 <button className='flex flex-col justify-center items-center bg-gray-800 rounded p-4 text-gray-300 hover:scale-105' onClick={() => setInputDiv("fixed")}>
                     <IoMdAddCircleOutline className='text-4xl' />

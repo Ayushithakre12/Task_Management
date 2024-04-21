@@ -1,12 +1,12 @@
 import React from 'react';
-import Cards from '../components/Home/Cards';
+import AllTasks from './AllTasks'
 
 const CompletedTasks = () => {
   return (
     <div>
-      <Cards home={"false"} route="completedTasks" />
+      <AllTasks home={"false"} isHideFilters={true} route="completedTasks" />
     </div>
-  )
+  );
 }
 
-export default CompletedTasks
+export default CompletedTasks;

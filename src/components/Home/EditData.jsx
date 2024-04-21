@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { IoCloseCircleOutline } from "react-icons/io5";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const EditData = ({ task, onClose, onUpdate, onAdd }) => {
     const [name, setName] = useState(task ? task.name : '');
@@ -7,25 +9,29 @@ const EditData = ({ task, onClose, onUpdate, onAdd }) => {
     const [priority, setPriority] = useState(task ? task.priority : '');
     const [isCompleted, setIsCompleted] = useState(task ? task.iscomplete : false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (task) {
             // If task is provided, it's an update operation
-            onUpdate({
+            const updatedTask ={
                 ...task,
                 name,
                 description,
                 priority,
                 iscompleted: isCompleted
-            });
+            };
+            await onUpdate(updatedTask);
+            toast.success('Task updated successfully!', { autoClose: 5000 });
         } else {
             // If task is not provided, it's an add operation
-            onAdd({
+            const newTask={
                 name,
                 description,
                 priority,
                 iscompleted: isCompleted
-            });
+            };
+            await onAdd(newTask);
+            toast.success('New Task added successfully!', { autoClose: 5000 });
         }
         onClose();
     };

@@ -2,11 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { IoCloseCircleOutline } from "react-icons/io5";
 import axios from 'axios';
 
-const InputData = ({ InputDiv, setInputDiv }) => {
+const InputData = ({ InputDiv, fetchData, setInputDiv }) => {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [priority, setPriority] = useState("");
     const [submitSuccess, setSubmitSuccess] = useState(false);
+
+    const resetForm = () => {
+        setName("");
+        setDescription("");
+        setPriority("");
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -18,13 +24,16 @@ const InputData = ({ InputDiv, setInputDiv }) => {
                 priority,
             });
 
-            console.log(response.data); // Log the response from the backend
-
             // Set submit success state to true
             setSubmitSuccess(true);
 
             // Close the page after submission
             setInputDiv('hidden');
+
+            fetchData();
+
+            // Reset form fields
+            resetForm();
         } catch (error) {
             console.error('Error adding task:', error.message);
             // Handle error, e.g., display error message to the user

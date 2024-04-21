@@ -62,8 +62,7 @@ const Login = () => {
                         <div className="text-red-500 text-center">{errorMessage}</div>
                     )}
                     <div className="text-sm text-white py-2">
-                        <a href='#' className="text-indigo-400 hover:text-indigo-500 font-semibold text-large mr-10 text-left"> Forget Password </a>
-                        <p className="font-medium inline-block text-right text-large mr-10"> Don't have an account? </p>
+                        <p className="font-medium inline-block text-center text-large mr-4"> Don't have an account? </p>
                         <a href="/register" className="text-indigo-400 hover:text-indigo-500 font-semibold text-large text-right"> Register  Here </a>
                     </div>
                 </div>

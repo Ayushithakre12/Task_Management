@@ -1,10 +1,10 @@
 import React from 'react';
-import Cards from '../components/Home/Cards';
+import AllTasks from './AllTasks'
 
 const ImportantTasks = () => {
   return (
     <div>
-      <Cards route="importantTasks" />
+      <AllTasks home={"false"} isHideFilters={true} route="importantTasks" />
     </div>
   );
 }
