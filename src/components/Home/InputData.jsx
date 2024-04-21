@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { IoCloseCircleOutline } from "react-icons/io5";
 import axios from 'axios';
+import { API } from "../../pages/api/axios"
 
-const InputData = ({ InputDiv, setInputDiv }) => {
+const InputData = ({ InputDiv, setInputDiv, fetchData }) => {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [priority, setPriority] = useState("");
@@ -10,27 +11,32 @@ const InputData = ({ InputDiv, setInputDiv }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+    
         try {
-            const response = await axios.post('https://localhost:7240/Task?taskId=null', {
+            const response = await API.post('/Task?taskId=null', {
                 name,
                 description,
                 priority,
             });
-
-            console.log(response.data); // Log the response from the backend
-
+        
+            // Clear input fields after successful submission
+            setName("");
+            setDescription("");
+            setPriority("");
+    
             // Set submit success state to true
             setSubmitSuccess(true);
-
+    
             // Close the page after submission
             setInputDiv('hidden');
+
+            fetchData()
         } catch (error) {
             console.error('Error adding task:', error.message);
             // Handle error, e.g., display error message to the user
         }
     };
-
+    
     useEffect(() => {
         let timer;
         if (submitSuccess) {

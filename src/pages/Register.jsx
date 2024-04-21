@@ -3,6 +3,8 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import {API} from "./api/axios"
+
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -49,7 +51,7 @@ const Register = () => {
                 password: formData.password,
             });
     
-            const response = await axios.post(`https://localhost:7240/Login/RegisterUser?${queryStringParams.toString()}`);
+            const response = await API.post(`/Login/RegisterUser?${queryStringParams.toString()}`);
     
             if (response.data.sucess) {
                 console.log('Registration successful:', response.data);
@@ -61,7 +63,7 @@ const Register = () => {
                 });
                 setError(null);
     
-                toast.success('Registration successful!', { autoClose: 5000 });
+                toast.success('Registration successful!', { autoClose: 5000 }); //pop-up
                 setTimeout(() => {
                     navigate('/login');
                 }, 4000);

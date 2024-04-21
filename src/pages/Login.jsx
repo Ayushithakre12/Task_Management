@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
+import { API } from "./api/axios" 
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -12,28 +13,24 @@ const Login = () => {
         event.preventDefault();
         
         try {
-            const response = await axios.post('https://localhost:7240/Login', null, {
-                params: {
-                    username,
-                    password
-                }
-            });
-
-            // For example, if it returns a token, you can store it in localStorage
-            //localStorage.setItem('token', response.data.token);
-
+            const url = `/Login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+            const response = await API.post(url, null, {
+                withCredentials: true
+            });            
+    
+            localStorage.setItem('token', response.data.token);
+    
             if (response.data.sucessMessage) {
                 navigate('/');
             } else {
-                // If login is unsuccessful, set error message
                 setErrorMessage("Username and password don't match.");
             }
         } catch (error) {
-            console.error(error.message);
-            // Handle other errors if needed
+            console.error('Error during login:', error.message);
+            setErrorMessage("An error occurred during login. Please try again later.");
         }
     };
-
+    
     return (
         <form onSubmit={onSubmit}>
             <div className='h-[98vh] flex items-center justify-center'>
@@ -62,9 +59,8 @@ const Login = () => {
                         <div className="text-red-500 text-center">{errorMessage}</div>
                     )}
                     <div className="text-sm text-white py-2">
-                        <a href='#' className="text-indigo-400 hover:text-indigo-500 font-semibold text-large mr-10 text-left"> Forget Password </a>
-                        <p className="font-medium inline-block text-right text-large mr-10"> Don't have an account? </p>
-                        <a href="/register" className="text-indigo-400 hover:text-indigo-500 font-semibold text-large text-right"> Register  Here </a>
+                        <p className="font-medium inline-block text-right text-large mr-4"> Don't have an account? </p>
+                        <a href="/register" className="text-indigo-400 hover:text-indigo-500 font-semibold text-large text-right"> Register Here </a>
                     </div>
                 </div>
             </div>

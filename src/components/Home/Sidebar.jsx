@@ -6,13 +6,14 @@ import { MdLabelImportant } from "react-icons/md";
 import { FaCheckDouble } from "react-icons/fa6";
 import { TbNotebookOff } from "react-icons/tb";
 import { Link } from 'react-router-dom';
+import { API } from "../../pages/api/axios";
 
 const Sidebar = () => {
     const navigate = useNavigate();
 
     const handleLogout = async () => {
         try {
-            await axios.put('https://localhost:7240/Login');
+            await API.put('/Login');
             localStorage.removeItem('token'); // Clear token from local storage
             navigate('/login'); // Redirect to login page
         } catch (error) {

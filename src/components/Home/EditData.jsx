@@ -1,33 +1,48 @@
 import React, { useState } from 'react';
 import { IoCloseCircleOutline } from "react-icons/io5";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const EditData = ({ task, onClose, onUpdate, onAdd }) => {
     const [name, setName] = useState(task ? task.name : '');
     const [description, setDescription] = useState(task ? task.description : '');
     const [priority, setPriority] = useState(task ? task.priority : '');
-    const [isCompleted, setIsCompleted] = useState(task ? task.iscomplete : false);
+    const [isComplete, setIsComplete] = useState(task ? task.iscomplete : false);
+    const [collaborators, setCollaborators] = useState(task ? task.collaborators : []);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (task) {
-            // If task is provided, it's an update operation
-            onUpdate({
-                ...task,
-                name,
-                description,
-                priority,
-                iscompleted: isCompleted
-            });
-        } else {
-            // If task is not provided, it's an add operation
-            onAdd({
-                name,
-                description,
-                priority,
-                iscompleted: isCompleted
-            });
+        
+        try {
+            if (task) {
+                // If task is provided, it's an update operation
+                const updatedTask = {
+                    ...task,
+                    name,
+                    description,
+                    priority,
+                    iscomplete: isComplete,
+                    collaborators
+                };
+                await onUpdate(updatedTask);
+                toast.success('Task updated successfully!', { autoClose: 5000 });
+            } else {
+                // If task is not provided, it's an add operation
+                const newTask = {
+                    name,
+                    description,
+                    priority,
+                    iscomplete: isComplete,
+                    collaborators
+                };
+                await onAdd(newTask);
+                toast.success('New Task added successfully!', { autoClose: 5000 });
+            }
+            onClose(); // Close the modal after successful update or addition
+        } catch (error) {
+            console.error('Error:', error.message);
+            toast.error('An error occurred. Please try again later.');
         }
-        onClose();
     };
 
     return (
@@ -65,25 +80,30 @@ const EditData = ({ task, onClose, onUpdate, onAdd }) => {
                         <option value="low">Low</option>
                     </select>
                     <select
+                        multiple
+                        value={collaborators}
+                        onChange={(e) => setCollaborators(Array.from(e.target.selectedOptions, option => option.value))}
                         className="mt-1 block w-full pl-3 pr-10 py-2 bg-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded my-3"
                     >
-                        <option>Collabration</option>
-                        <option>Ayushi</option>
-                        <option>xyz</option>
+                        <option value="Ayushi">Ayushi</option>
+                        <option value="xyz">xyz</option>
+                        <option value="abc">abc</option>
+                        <option value="root">Root</option>
                     </select>
                     <div className="flex items-center my-3">
                         <input
                             type="checkbox"
-                            id="isCompleted"
-                            checked={isCompleted}
-                            onChange={(e) => setIsCompleted(e.target.checked)}
+                            id="iscomplete"
+                            checked={isComplete}
+                            onChange={(e) => setIsComplete(e.target.checked)}
                             className="form-checkbox h-5 w-5 text-indigo-600 rounded mr-2"
                         />
-                        <label htmlFor="isCompleted" className="text-gray-300">Completed</label>
+                        <label htmlFor="iscomplete" className="text-gray-300">Completed</label>
                     </div>
                     <button type="submit" className="px-3 py-2 bg-blue-400 rounded text-black text-xl font-semibold my-3">{task ? 'Update' : 'Add'}</button>
                 </form>
             </div>
+            {/* ToastContainer removed */}
         </div>
     );
 };

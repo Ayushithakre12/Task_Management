@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
-const StatusFilter = ({ onStatusChange }) => {   // Receive onStatusChange prop
+const StatusFilter = ({ onStatusChange }) => {
+  
   const [selectedStatus, setSelectedStatus] = useState('');
 
   const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
-    onStatusChange(event.target.value); // Pass selected status to parent component
+    onStatusChange(event.target.value);
   };
 
   return (

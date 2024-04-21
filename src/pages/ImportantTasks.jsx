@@ -4,7 +4,7 @@ import Cards from '../components/Home/Cards';
 const ImportantTasks = () => {
   return (
     <div>
-      <Cards route="importantTasks" />
+      <Cards home={"false"}  route="importantTasks" />
     </div>
   );
 }

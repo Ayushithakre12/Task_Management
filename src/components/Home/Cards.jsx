@@ -5,49 +5,40 @@ import { RiDeleteBin7Line } from "react-icons/ri";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import TaskDetails from './TaskDetails'
 import EditData from './EditData';
+import ConfirmationScreen from './ConfirmationScreen';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { API } from "../../pages/api/axios";
 
-const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus, startDate, endDate }) => {
-    const [allTask, setAllTasks] = useState([]);
-    const [loading, setLoading] = useState(true);
+const Cards = ({ home, setInputDiv, tasks , fetchData, setTasks, route, searchTerm, selectedStatus, startDate, endDate }) => {
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
     const [editTaskOpen, setEditTaskOpen] = useState(false);
+    const [confirmDelete, setConfirmDelete] = useState(false);  
+    const [filteredTasks,setFilteredTasks] = useState([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('https://localhost:7240/Task?search=null&status=null');
-                if (response.data && response.data.allTask) {
-                    setAllTasks(response.data.allTask);
-                    setLoading(false);
-                } else {
-                    setError('No tasks found.');
-                }
-            } catch (error) {
-                console.error('Error fetching tasks:', error.message);
-                setError('Error fetching tasks. Please try again later.');
-            }
-        };
 
-        fetchData();
-
-        return () => {
-            // Cleanup function if needed
-        };
-    }, []);
-
+    useEffect(()=>{
+        applyFilters()
+    },[route])
+ 
     const deleteTask = async (taskId) => {
         try {
-            const response = await axios.delete(`https://localhost:7240/Task?taskId=${taskId}`);
+            const response = await API.delete(`/Task?taskId=${taskId}`);
+
             if (!response.data.errorMessage) {
-                // If there is no error message, update state to reflect successful deletion
-                setAllTasks(allTask.filter(task => task.id !== taskId));
-                setSelectedTask(null); // Clear the selected task
+
+                setTasks(tasks.filter(task => task.id !== taskId));
+                setSelectedTask(null);
+                toast.success('Task deleted successfully!');
+
             } else {
                 setError('Error deleting task.');
             }
         } catch (error) {
+            
             console.error('Error deleting task:', error.message);
             setError('Error deleting task. Please try again later.');
         }
@@ -55,36 +46,40 @@ const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus, startDate
 
     const handleUpdateTask = async (updatedTask) => {
         try {
-            const response = await axios.post(`https://localhost:7240/Task?taskId=${updatedTask.id}`, updatedTask);
-            if (response.data && response.data.success) {
+            const response = await API.post(`/Task?taskId=${updatedTask.id}`, updatedTask);
+
+            if (response.data && response.data.sucess) {
                 // Update state to reflect the updated task
-                const updatedTasks = allTask.map(task => (task.id === updatedTask.id ? updatedTask : task));
-                setAllTasks(updatedTasks);
+                const updatedTasks = tasks.map(task => (task.id === updatedTask.id ? updatedTask : task));
+                setTasks([...updatedTasks])
                 setEditTaskOpen(false);
+            
             } else {
-                setError(response.data.errorMessage && 'Error updating task.');
+                setError('Error updating task.');
             }
         } catch (error) {
             console.error('Error updating task:', error.message);
             setError('Error updating task. Please try again later.');
         }
-    };
+    };  
     
     const handleAddTask = async (newTask) => {
         try {
-            const response = await axios.post('https://localhost:7240/Task?taskId=null', newTask);
-            if (response.data && response.data.success) {
-                // Update state directly to add the new task and reflect it immediately
-                setAllTasks([...allTask, response.data.task]);
+            const response = await API.post('/Task?taskId=null', newTask);
+
+            if (response.data && response.data.sucessMessage) {
+                fetchData()
                 setEditTaskOpen(false);
             } else {
                 setError('Error adding task.');
             }
+
         } catch (error) {
             console.error('Error adding task:', error.message);
             setError('Error adding task. Please try again later.');
         }
     };
+    
        
     const handleEditTask = (task) => {
         setSelectedTask(task); // Set the selected task for editing
@@ -102,10 +97,21 @@ const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus, startDate
         setSelectedTask(null); // Clear the selected task
     };
 
-    const filteredTasks = (route === "importantTasks" && allTask.filter(task => task.priority === "high")) ||
-        (route === "completedTasks" && allTask.filter(task => task.iscomplete === true)) ||
-        (route === "incompletedTasks" && allTask.filter(task => task.iscomplete === false)) ||
-        allTask.filter(task => {
+    const handleConfirmDelete = () => {
+        deleteTask(selectedTask.id);
+        setConfirmDelete(false);
+    };
+
+    const handleCancelDelete = () => {
+        setConfirmDelete(false);
+    };
+
+    const applyFilters = ()=>{
+
+        const filteredTasks = (route === "importantTasks" && tasks.filter(task => task.priority === "high")) ||
+        (route === "completedTasks" && tasks.filter(task => task.iscomplete === true)) ||
+        (route === "incompletedTasks" && tasks.filter(task => task.iscomplete === false)) ||
+        tasks.filter(task => {
             const taskDate = task.createdDate ? new Date(task.createdDate) : null;
 
             // Check if the task falls within the selected date range
@@ -131,8 +137,10 @@ const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus, startDate
 
             return isWithinSelectedDate && isEndAfterStart && isIncluded;
         });
-   
 
+        setFilteredTasks(filteredTasks)
+    }
+   
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -161,14 +169,13 @@ const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus, startDate
                             <button className={`${task.priority === "high" ? "bg-red-400" : (task.priority === "medium" ? "bg-yellow-400" : "bg-green-400")} p-2 rounded w-1.5/6 items-center`}>
                                 <FcHighPriority />
                             </button>
-                            <button onClick={() => deleteTask(task.id)}>
+                            <button onClick={() => setConfirmDelete(true)}>
                                 <RiDeleteBin7Line />
                             </button>
                         </div>
                     </div>
                 </div>
             ))}
-            {/* Render TaskDetails if a task is selected */}
             {selectedTask && <TaskDetails task={selectedTask} onClose={handleCloseTaskDetails} />}
             {editTaskOpen && (
                 <EditData
@@ -178,6 +185,7 @@ const Cards = ({ home, setInputDiv, route, searchTerm, selectedStatus, startDate
                     onAdd={handleAddTask} // Pass the handleAddTask function to EditData
                 />
             )}
+            {confirmDelete && <ConfirmationScreen onCancel={handleCancelDelete} onConfirm={handleConfirmDelete} />}
             {home === "true" && (
                 <button className='flex flex-col justify-center items-center bg-gray-800 rounded p-4 text-gray-300 hover:scale-105' onClick={() => setInputDiv("fixed")}>
                     <IoMdAddCircleOutline className='text-4xl' />
