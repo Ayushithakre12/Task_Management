@@ -18,7 +18,7 @@ const EditData = ({ task, onClose, onUpdate, onAdd }) => {
 
     const fetchCollaborators = async () => {
         try {
-            const response = await axios.get('https://localhost:7240/Task/RetriveAllUser');
+            const response = await axios.get('https://localhost:7240/Task/RetriveAllUser',{withCredentials: true});
             if (response.data && response.data.allUser) {
                 setCollaborators(response.data.allUser);
             } else {

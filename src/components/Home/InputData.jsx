@@ -16,7 +16,7 @@ const InputData = ({ InputDiv, fetchData, setInputDiv }) => {
 
     const fetchCollaborators = async () => {
         try {
-            const response = await axios.get('https://localhost:7240/Task/RetriveAllUser');
+            const response = await axios.get('https://localhost:7240/Task/RetriveAllUser',{withCredentials: true});
             if (response.data && response.data.allUser) {
                 setCollaborators(response.data.allUser);
             }
@@ -42,7 +42,9 @@ const InputData = ({ InputDiv, fetchData, setInputDiv }) => {
                 description,
                 priority,
                 collaborators: selectedCollaborators,
-            });
+            },
+            {withCredentials: true}
+        );
 
             // Set submit success state to true
             setSubmitSuccess(true);

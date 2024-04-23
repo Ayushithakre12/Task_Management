@@ -17,16 +17,15 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
     const [error, setError] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
     const [editTaskOpen, setEditTaskOpen] = useState(false);
-    const [confirmDelete, setConfirmDelete] = useState(false);  
-    const navigate = useNavigate();    
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const navigate = useNavigate();
 
     const deleteTask = async (taskId) => {
         try {
-            const response = await axios.delete(`https://localhost:7240/Task?taskId=${taskId}`);
+            const response = await axios.delete(`https://localhost:7240/Task?taskId=${taskId}`, { withCredentials: true });
             if (!response.data.errorMessage) {
                 setTasks([...tasks.filter(task => task.id !== taskId)]);
                 toast.success('Task deleted successfully!');
-                setSelectedTask(null); 
             } else {
                 setError('Error deleting task.');
             }
@@ -38,7 +37,7 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
 
     const handleUpdateTask = async (updatedTask) => {
         try {
-            const response = await axios.post(`https://localhost:7240/Task?taskId=${updatedTask.id}`, updatedTask);
+            const response = await axios.post(`https://localhost:7240/Task?taskId=${updatedTask.id}`, updatedTask, { withCredentials: true });
             if (response.data && response.data.sucess) {
                 // Update state to reflect the updated task
                 navigate(0);
@@ -51,10 +50,10 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
             setError('Error updating task. Please try again later.');
         }
     };
-    
+
     const handleAddTask = async (newTask) => {
         try {
-            const response = await axios.post('https://localhost:7240/Task?taskId=null', newTask);
+            const response = await axios.post('https://localhost:7240/Task?taskId=null', newTask, { withCredentials: true });
             if (response.data && response.data.sucess) {
                 // Update state directly to add the new task and reflect it immediately
                 setTasks([...tasks, response.data.task]);
@@ -67,7 +66,7 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
             setError('Error adding task. Please try again later.');
         }
     };
-       
+
     const handleEditTask = (task) => {
         setSelectedTask(task); // Set the selected task for editing
         setEditTaskOpen(true); // Open the edit form
@@ -86,6 +85,7 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
     const handleConfirmDelete = () => {
         deleteTask(selectedTask.id);
         setConfirmDelete(false);
+        setSelectedTask(null);
     };
 
     const handleCancelDelete = () => {
@@ -121,7 +121,7 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
 
             return isWithinSelectedDate && isEndAfterStart && isIncluded;
         });
-   
+
 
     if (loading) {
         return <div>Loading...</div>;
@@ -145,7 +145,7 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
                             {task.iscomplete ? "Completed" : "Incomplete"}
                         </button>
                         <div className='text-white p-2 w-3/6 text-2xl font-semibold flex justify-around'>
-                           <button onClick={() => handleEditTask(task)}>
+                            <button onClick={() => handleEditTask(task)}>
                                 <BiEdit />
                             </button>
                             <button className={`${task.priority === "high" ? "bg-red-400" : (task.priority === "medium" ? "bg-yellow-400" : "bg-green-400")} p-2 rounded w-1.5/6 items-center`}>
@@ -158,8 +158,12 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
                     </div>
                 </div>
             ))}
-            {confirmDelete && <ConfirmationScreen onCancel={handleCancelDelete} onConfirm={handleConfirmDelete} />}
-            {selectedTask && <TaskDetails task={selectedTask} onClose={handleCloseTaskDetails} />}
+            {confirmDelete ? (
+                <ConfirmationScreen onCancel={handleCancelDelete} onConfirm={handleConfirmDelete} />
+            ) : (
+                selectedTask && <TaskDetails task={selectedTask} onClose={handleCloseTaskDetails} />
+            )}
+
             {editTaskOpen && (
                 <EditData
                     task={selectedTask}

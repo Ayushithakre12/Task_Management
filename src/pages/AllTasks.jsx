@@ -34,7 +34,7 @@ const AllTasks = ({ home, route, isHideFilters }) => {
       if (selectedStatus) {
         url = `https://localhost:7240/Task?search=null&status=${selectedStatus === 'completed' ? 'true' : 'false'}`;
       }
-      const response = await axios.get(url);
+      const response = await axios.get(url,{ withCredentials: true});
       if (response.data && response.data.allTask) {
         setTasks(response.data.allTask);
         setLoading(false);
@@ -56,7 +56,8 @@ const AllTasks = ({ home, route, isHideFilters }) => {
     } else {
       try {
         const response = await axios.get(
-          `https://localhost:7240/Task?search=${searchTerm}&status=null`
+          `https://localhost:7240/Task?search=${searchTerm}&status=null`,
+          {withCredentials: true}
         );
         if (response.data && response.data.allTask) {
           setTasks(response.data.allTask);
@@ -75,7 +76,8 @@ const AllTasks = ({ home, route, isHideFilters }) => {
     setEndDate(endDate);
     try {
       const response = await axios.get(
-        `https://localhost:7240/Task?status=null&year=${new Date(startDate).getFullYear()}&month=${new Date(startDate).getMonth() + 1}&day=${new Date(startDate).getDate()}&search=null`
+        `https://localhost:7240/Task?status=null&year=${new Date(startDate).getFullYear()}&month=${new Date(startDate).getMonth() + 1}&day=${new Date(startDate).getDate()}&search=null`,
+        {withCredentials: true}
       );
       if (response.data && response.data.allTask) {
         setTasks(response.data.allTask);
