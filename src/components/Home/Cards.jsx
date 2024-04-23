@@ -24,7 +24,6 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
         try {
             const response = await axios.delete(`https://localhost:7240/Task?taskId=${taskId}`);
             if (!response.data.errorMessage) {
-                // If there is no error message, update state to reflect successful deletion
                 setTasks([...tasks.filter(task => task.id !== taskId)]);
                 toast.success('Task deleted successfully!');
                 setSelectedTask(null); 
@@ -159,7 +158,7 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
                     </div>
                 </div>
             ))}
-            {/* Render TaskDetails if a task is selected */}
+            {confirmDelete && <ConfirmationScreen onCancel={handleCancelDelete} onConfirm={handleConfirmDelete} />}
             {selectedTask && <TaskDetails task={selectedTask} onClose={handleCloseTaskDetails} />}
             {editTaskOpen && (
                 <EditData
@@ -169,7 +168,6 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
                     onAdd={handleAddTask} // Pass the handleAddTask function to EditData
                 />
             )}
-             {confirmDelete && <ConfirmationScreen onCancel={handleCancelDelete} onConfirm={handleConfirmDelete} />}
             {home === "true" && (
                 <button className='flex flex-col justify-center items-center bg-gray-800 rounded p-4 text-gray-300 hover:scale-105' onClick={() => setInputDiv("fixed")}>
                     <IoMdAddCircleOutline className='text-4xl' />

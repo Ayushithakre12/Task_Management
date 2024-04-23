@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { CgNotes } from "react-icons/cg";
@@ -9,15 +9,23 @@ import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
     const navigate = useNavigate();
+    const [username, setUsername] = useState('');
+
+    useEffect(() => {
+        const storedUsername = localStorage.getItem('username');
+        if (storedUsername) {
+            setUsername(storedUsername);
+        }
+    }, []);
 
     const handleLogout = async () => {
         try {
             await axios.put('https://localhost:7240/Login');
-            localStorage.removeItem('token'); // Clear token from local storage
-            navigate('/login'); // Redirect to login page
+            localStorage.removeItem('id'); 
+            localStorage.removeItem('username'); 
+            navigate('/login'); 
         } catch (error) {
             console.error('Error logging out:', error);
-            // Handle error if needed
         }
     };
 
@@ -47,9 +55,8 @@ const Sidebar = () => {
     return (
         <>
             <div>
-                <h2 className='text-xl font-semibold'>Ayushi thakre</h2>
-                <h4 className='my-1 text-gray-400'>ayushithakre8@gmail.com</h4>
-                <hr />
+                <h1 className='text-xl font-semibold'>{username}</h1>
+                <hr/>
             </div>
             <div>
                 {data.map((item, index) => (

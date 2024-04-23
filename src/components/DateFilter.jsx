@@ -19,27 +19,27 @@ const DateFilter = ({ onFilter }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex items-left mb-2">
+      <div className="flex items-center mb-4">
         <label htmlFor="startDate" className="mr-2">Start Date:</label>
         <input
           type="date"
           id="startDate"
           value={startDate}
           onChange={handleStartDateChange}
-          className="border rounded  text-black px-2 py-1"
+          className="border rounded text-black p-2"
         />
       </div>
-      <div className="flex items-left">
+      <div className="flex items-center mb-4">
         <label htmlFor="endDate" className="mr-2">End Date:</label>
         <input
           type="date"
           id="endDate"
           value={endDate}
           onChange={handleEndDateChange}
-          className="border rounded  text-black px-2 py-1"
+          className="border  text-black rounded p-2"
         />
       </div>
-      <button type="submit" className="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded mt-2 ">
+      <button type="submit" className="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded">
         Filter
       </button>
     </form>

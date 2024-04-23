@@ -1,40 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 const EditData = ({ task, onClose, onUpdate, onAdd }) => {
     const [name, setName] = useState(task ? task.name : '');
     const [description, setDescription] = useState(task ? task.description : '');
     const [priority, setPriority] = useState(task ? task.priority : '');
     const [isCompleted, setIsCompleted] = useState(task ? task.iscomplete : false);
+    const [collaborators, setCollaborators] = useState([]);
+    const [selectedCollaborators, setSelectedCollaborators] = useState([]);
+
+    useEffect(() => {
+        fetchCollaborators();
+    }, []);
+
+    const fetchCollaborators = async () => {
+        try {
+            const response = await axios.get('https://localhost:7240/Task/RetriveAllUser');
+            if (response.data && response.data.allUser) {
+                setCollaborators(response.data.allUser);
+            } else {
+                toast.error('Failed to fetch collaborators');
+            }
+        } catch (error) {
+            console.error('Error fetching collaborators:', error.message);
+            toast.error('Failed to fetch collaborators');
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (task) {
             // If task is provided, it's an update operation
-            const updatedTask ={
+            const updatedTask = {
                 ...task,
                 name,
                 description,
                 priority,
-                iscompleted: isCompleted
+                iscompleted: isCompleted,
+                collaborators: selectedCollaborators // Pass selected collaborators directly
             };
             await onUpdate(updatedTask);
             toast.success('Task updated successfully!', { autoClose: 5000 });
         } else {
             // If task is not provided, it's an add operation
-            const newTask={
+            const newTask = {
                 name,
                 description,
                 priority,
-                iscompleted: isCompleted
+                iscompleted: isCompleted,
+                collaborators: selectedCollaborators // Pass selected collaborators directly
             };
             await onAdd(newTask);
             toast.success('New Task added successfully!', { autoClose: 5000 });
         }
         onClose();
     };
+    
 
     return (
         <div className="fixed top-0 left-0 w-full h-full flex items-center bg-gray-900 justify-center bg-opacity-75">
@@ -71,11 +95,14 @@ const EditData = ({ task, onClose, onUpdate, onAdd }) => {
                         <option value="low">Low</option>
                     </select>
                     <select
+                        multiple
+                        value={selectedCollaborators}
+                        onChange={(e) => setSelectedCollaborators(Array.from(e.target.selectedOptions, option => option.value))}
                         className="mt-1 block w-full pl-3 pr-10 py-2 bg-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded my-3"
                     >
-                        <option>Collabration</option>
-                        <option>Ayushi</option>
-                        <option>xyz</option>
+                        {collaborators.map(collaborator => (
+                            <option key={collaborator.id} value={collaborator.id}>{collaborator.name}</option>
+                        ))}
                     </select>
                     <div className="flex items-center my-3">
                         <input
