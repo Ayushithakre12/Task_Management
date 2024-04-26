@@ -56,7 +56,6 @@ const Sidebar = () => {
         <>
             <div>
                 <h1 className='text-xl font-semibold'>{username}</h1>
-                <hr/>
             </div>
             <div>
                 {data.map((item, index) => (

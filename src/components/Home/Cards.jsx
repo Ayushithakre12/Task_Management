@@ -133,9 +133,9 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
 
     return (
 
-        <div className='grid grid-cols-3 gap-4 p-4 hover:cursor-pointer transition-all duration-300'>
+        <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-4 p-4 hover:cursor-pointer transition-all duration-300'>
             {filteredTasks.map((task) => (
-                <div key={task.id} className='flex flex-col justify-between bg-gray-800 rounded p-4' onClick={() => handleTaskClick(task)}>
+                <div key={task.id} className='flex flex-col justify-between bg-gray-800 rounded p-4 hover:shadow-md' onClick={() => handleTaskClick(task)}>
                     <div>
                         <h3 className='text-xl font-semibold'>{task.name}</h3>
                         <p className='text-gray-300 my-2'>{task.description}</p>

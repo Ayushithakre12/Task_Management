@@ -107,10 +107,10 @@ const AllTasks = ({ home, route, isHideFilters }) => {
       <div>
         {
           !isHideFilters && (
-            <div className="w-full bg-gray-800 p-4 rounded-lg shadow-md flex items-center justify-between">
-              <DateFilter onFilter={handleDateFilter} />
-              <StatusFilter onStatusChange={handleStatusChange} />
-              <SearchBar onSearch={handleSearch} />
+            <div className="flex flex-col sm:flex-row w-full bg-gray-800 p-4 rounded-lg shadow-md items-center justify-between">
+              <DateFilter onFilter={handleDateFilter} className="w-full sm:w-1/3"/>
+              <StatusFilter onStatusChange={handleStatusChange} className="w-full sm:w-1/3 mt-2 sm:mt-0"/>
+              <SearchBar onSearch={handleSearch} className="w-full sm:w-1/3 mt-2 sm:mt-0"/>
               <button onClick={() => setInputDiv("fixed")}>
                 <IoMdAddCircleOutline className='text-4xl text-gray-400 hover:text-gray-100 transition-all duration-300 ' />
               </button>

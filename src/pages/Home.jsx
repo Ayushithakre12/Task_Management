@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom'
 
 const Home = () => {
     return (
-        <div className='flex h-screen gap-4 w-full text-wrap overflow-hidden'>
+        <div className=' flex min-h-screen h-screen gap-4 w-full text-wrap overflow-hidden'>
             <div className='w-1/6 border border-gray-500 rounded-xl p-4 flex flex-col justify-between'>
                 <Sidebar />
             </div>

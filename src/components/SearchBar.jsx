@@ -13,13 +13,13 @@ const SearchBar = ({ onSearch }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className='flex w-full md:w-auto'>
             <input
                 type="text"
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={handleChange}
-                className="bg-gray-200 text-black px-4 py-2 rounded-l-md focus:outline-none"
+                className="bg-gray-200 text-black px-4 py-2 rounded-l-md focus:outline-none w-full md:w-80"
             />
             <button
                 type="submit"
