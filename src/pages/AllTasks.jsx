@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Cards from '../components/Home/Cards';
 import { IoMdAddCircleOutline } from "react-icons/io";
 import InputData from '../components/Home/InputData';
-import SearchBar from '../components/SearchBar';
+import SearchBar from '../components/filter/SearchBar';
+import DateFilter from '../components/filter/DateFilter';
+import StatusFilter from '../components/filter/StatusFilter';
 import axios from 'axios';
-import DateFilter from '../components/DateFilter';
-import StatusFilter from '../components/StatusFilter';
 
 const AllTasks = ({ home, route, isHideFilters }) => {
   const [InputDiv, setInputDiv] = useState("hidden");
@@ -18,11 +18,9 @@ const AllTasks = ({ home, route, isHideFilters }) => {
   const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
-
-
     fetchData();
-
     return () => {
+
       // Cleanup function if needed
     };
   }, [selectedStatus]);

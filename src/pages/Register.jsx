@@ -63,7 +63,7 @@ const Register = () => {
     
                 toast.success('Registration successful!', { autoClose: 5000 });
                 setTimeout(() => {
-                    navigate('/login');
+                    navigate('/');
                 }, 4000);
             } else {
                 console.log('Error message in response:', response.data.errorMessage);
@@ -145,7 +145,7 @@ const Register = () => {
                         </div>
                     </form>
                     <div className="text-sm text-center">
-                        <p className="font-medium text-white">Already have an account? <a href="/login" className="text-indigo-600 hover:text-indigo-500">Log in here</a></p>
+                        <p className="font-medium text-white">Already have an account? <a href="/" className="text-indigo-600 hover:text-indigo-500">Log in here</a></p>
                     </div>
                     {error && <div className="text-red-500 mt-4">{error}</div>}
                 </div>

@@ -5,11 +5,17 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState(""); // State for error message
+    const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
 
     const onSubmit = async (event) => {
         event.preventDefault();
+
+        // Validation: Check if username or password is empty
+        if (!username || !password) {
+            setErrorMessage("Please provide both username and password.");
+            return;
+        }
 
         try {
             const response = await axios.post('https://localhost:7240/Login', null, {
@@ -21,18 +27,24 @@ const Login = () => {
             });
 
             if (response.data.sucessMessage) {
-                localStorage.setItem('username', response.data.username)
-                localStorage.setItem('id',response.data.sucessMessage)
+                localStorage.setItem('username', response.data.username);
+                localStorage.setItem('id', response.data.sucessMessage);
 
-                navigate('/');
-            } else {
-                setErrorMessage("Username and password don't match.");
+                navigate('/dashboard')
             }
+            else if (response.data.error) {
+                if (response.data.errorMessage.includes("Error occureed while Login.")) {
+                    setErrorMessage("User doesn't exist. Please register.");
+                }
+                else{
+                    setErrorMessage("Username and password don't match.");
+                }
+            }
+
         } catch (error) {
             console.error(error.message);
         }
     };
-
     return (
         <form onSubmit={onSubmit}>
             <div className='h-[98vh] flex items-center justify-center'>

@@ -39,7 +39,7 @@ const EditData = ({ task, onClose, onUpdate, onAdd }) => {
                 name,
                 description,
                 priority,
-                iscompleted: isCompleted,
+                isCompleted: isCompleted,
                 collaborators: selectedCollaborators // Pass selected collaborators directly
             };
             await onUpdate(updatedTask);

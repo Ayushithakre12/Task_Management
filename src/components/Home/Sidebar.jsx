@@ -23,7 +23,7 @@ const Sidebar = () => {
             await axios.put('https://localhost:7240/Login');
             localStorage.removeItem('id'); 
             localStorage.removeItem('username'); 
-            navigate('/login'); 
+            navigate('/'); 
         } catch (error) {
             console.error('Error logging out:', error);
         }
@@ -33,22 +33,22 @@ const Sidebar = () => {
         {
             title: "All task",
             icon: <CgNotes />,
-            link: "/",
+            link: "/dashboard",
         },
         {
             title: "Important task",
             icon: <MdLabelImportant />,
-            link: "/importantTasks",
+            link: "importantTasks",
         },
         {
             title: "Completed task",
             icon: <FaCheckDouble />,
-            link: "/completedTasks",
+            link: "completedTasks",
         },
         {
             title: "Incompleted task",
             icon: <TbNotebookOff />,
-            link: "/incompletedTasks",
+            link: "incompletedTasks",
         },
     ];
 

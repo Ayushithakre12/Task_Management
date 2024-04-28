@@ -39,8 +39,17 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
         try {
             const response = await axios.post(`https://localhost:7240/Task?taskId=${updatedTask.id}`, updatedTask, { withCredentials: true });
             if (response.data && response.data.sucess) {
+                const updatedTaskList = tasks.map(task => {
+                    if (task.id === updatedTask.id) {
+                        return {
+                            ...task,
+                            ...updatedTask
+                        };
+                    }
+                    return task;
+                });
+                setTasks(updatedTaskList);    
                 // Update state to reflect the updated task
-                navigate(0);
                 setEditTaskOpen(false);
             } else {
                 setError(response.data.errorMessage && 'Error updating task.');
