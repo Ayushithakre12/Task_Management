@@ -16,7 +16,7 @@ const InputData = ({ InputDiv, fetchData, setInputDiv }) => {
 
     const fetchCollaborators = async () => {
         try {
-            const response = await axios.get('https://localhost:7240/Task/RetriveAllUser',{withCredentials: true});
+            const response = await axios.get('https://localhost:7240/Task/RetriveAllUser', { withCredentials: true });
             if (response.data && response.data.allUser) {
                 setCollaborators(response.data.allUser);
             }
@@ -43,8 +43,8 @@ const InputData = ({ InputDiv, fetchData, setInputDiv }) => {
                 priority,
                 collaborators: selectedCollaborators,
             },
-            {withCredentials: true}
-        );
+                { withCredentials: true }
+            );
 
             // Set submit success state to true
             setSubmitSuccess(true);
@@ -82,7 +82,8 @@ const InputData = ({ InputDiv, fetchData, setInputDiv }) => {
             <div className={`${InputDiv} top-0 left-0 bg-gray-800 opacity-80 h-screen w-full`}></div>
             <div className={`${InputDiv} top-0 left-0 flex items-center justify-center h-screen w-full`}>
                 <div className='w-3/6 bg-gray-900 p-4 rounded'>
-                    <div className='flex justify-end'>
+                    <div className='flex justify-between items-center'>
+                        <h2 className="text-xl font-semibold text-white">Add Task</h2>
                         <button className='text-2xl' onClick={() => setInputDiv('hidden')}>
                             <IoCloseCircleOutline />
                         </button>
@@ -103,6 +104,7 @@ const InputData = ({ InputDiv, fetchData, setInputDiv }) => {
                             rows="4"
                         ></textarea>
                         <select
+                            placeholder='Select Priority'
                             value={priority}
                             onChange={(e) => setPriority(e.target.value)}
                             className="mt-1 block w-full pl-3 pr-10 py-2 bg-gray-700  focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded my-3"

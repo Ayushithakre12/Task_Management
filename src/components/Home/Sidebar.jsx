@@ -21,9 +21,9 @@ const Sidebar = () => {
     const handleLogout = async () => {
         try {
             await axios.put('https://localhost:7240/Login');
-            localStorage.removeItem('id'); 
-            localStorage.removeItem('username'); 
-            navigate('/'); 
+            localStorage.removeItem('id');
+            localStorage.removeItem('username');
+            navigate('/');
         } catch (error) {
             console.error('Error logging out:', error);
         }

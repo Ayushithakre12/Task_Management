@@ -48,7 +48,7 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
                     }
                     return task;
                 });
-                setTasks(updatedTaskList);    
+                setTasks(updatedTaskList);
                 // Update state to reflect the updated task
                 setEditTaskOpen(false);
             } else {
@@ -154,13 +154,13 @@ const Cards = ({ home, setInputDiv, setTasks, tasks, route, searchTerm, selected
                             {task.iscomplete ? "Completed" : "Incomplete"}
                         </button>
                         <div className='text-white p-2 w-3/6 text-2xl font-semibold flex justify-around'>
-                            <button onClick={() => handleEditTask(task)}>
+                            <button onClick={() => handleEditTask(task)} data-testid="edit-button">
                                 <BiEdit />
                             </button>
                             <button className={`${task.priority === "high" ? "bg-red-400" : (task.priority === "medium" ? "bg-yellow-400" : "bg-green-400")} p-2 rounded w-1.5/6 items-center`}>
                                 <FcHighPriority />
                             </button>
-                            <button onClick={() => setConfirmDelete(true)}>
+                            <button onClick={() => setConfirmDelete(true)} data-testid="delete-button">
                                 <RiDeleteBin7Line />
                             </button>
                         </div>

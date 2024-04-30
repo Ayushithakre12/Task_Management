@@ -32,7 +32,7 @@ const AllTasks = ({ home, route, isHideFilters }) => {
       if (selectedStatus) {
         url = `https://localhost:7240/Task?search=null&status=${selectedStatus === 'completed' ? 'true' : 'false'}`;
       }
-      const response = await axios.get(url,{ withCredentials: true});
+      const response = await axios.get(url, { withCredentials: true });
       if (response.data && response.data.allTask) {
         setTasks(response.data.allTask);
         setLoading(false);
@@ -55,7 +55,7 @@ const AllTasks = ({ home, route, isHideFilters }) => {
       try {
         const response = await axios.get(
           `https://localhost:7240/Task?search=${searchTerm}&status=null`,
-          {withCredentials: true}
+          { withCredentials: true }
         );
         if (response.data && response.data.allTask) {
           setTasks(response.data.allTask);
@@ -75,7 +75,7 @@ const AllTasks = ({ home, route, isHideFilters }) => {
     try {
       const response = await axios.get(
         `https://localhost:7240/Task?status=null&year=${new Date(startDate).getFullYear()}&month=${new Date(startDate).getMonth() + 1}&day=${new Date(startDate).getDate()}&search=null`,
-        {withCredentials: true}
+        { withCredentials: true }
       );
       if (response.data && response.data.allTask) {
         setTasks(response.data.allTask);
@@ -106,9 +106,9 @@ const AllTasks = ({ home, route, isHideFilters }) => {
         {
           !isHideFilters && (
             <div className="flex flex-col sm:flex-row w-full bg-gray-800 p-4 rounded-lg shadow-md items-center justify-between">
-              <DateFilter onFilter={handleDateFilter} className="w-full sm:w-1/3"/>
-              <StatusFilter onStatusChange={handleStatusChange} className="w-full sm:w-1/3 mt-2 sm:mt-0"/>
-              <SearchBar onSearch={handleSearch} className="w-full sm:w-1/3 mt-2 sm:mt-0"/>
+              <DateFilter onFilter={handleDateFilter} className="w-full sm:w-1/3" />
+              <StatusFilter onStatusChange={handleStatusChange} className="w-full sm:w-1/3 mt-2 sm:mt-0" />
+              <SearchBar onSearch={handleSearch} className="w-full sm:w-1/3 mt-2 sm:mt-0" />
               <button onClick={() => setInputDiv("fixed")}>
                 <IoMdAddCircleOutline className='text-4xl text-gray-400 hover:text-gray-100 transition-all duration-300 ' />
               </button>

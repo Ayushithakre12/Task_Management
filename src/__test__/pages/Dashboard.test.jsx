@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { toBeInTheDocument, toHaveBeenCalledWith } from '@testing-library/jest-dom';
-import Dashboard from '../../pages/Dashboard'; 
+import Dashboard from '../../pages/Dashboard';
 
 jest.mock('../../components/Home/Sidebar', () => () => <div data-testid="sidebar">Mock Sidebar</div>);
 jest.mock('react-router-dom', () => ({

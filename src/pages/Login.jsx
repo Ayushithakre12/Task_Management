@@ -34,15 +34,15 @@ const Login = () => {
             }
             else if (response.data.error) {
                 if (response.data.errorMessage.includes("Error occureed while Login.")) {
-                    setErrorMessage("User doesn't exist. Please register.");
+                    setErrorMessage("User doesn't exists. Please register.");
                 }
-                else{
+                else {
                     setErrorMessage("Username and password don't match.");
                 }
             }
 
         } catch (error) {
-            console.error(error.message);
+            setErrorMessage("Error occureed while Login.");
         }
     };
     return (

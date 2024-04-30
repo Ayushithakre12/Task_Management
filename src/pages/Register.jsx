@@ -27,13 +27,13 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-    
+
         if (formData.password !== formData.confirmPassword) {
             setError('Passwords do not match.');
             setIsSubmitting(false);
             return;
         }
-    
+
         // Password validation
         const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
         if (!passwordRegex.test(formData.password)) {
@@ -41,16 +41,16 @@ const Register = () => {
             setIsSubmitting(false);
             return;
         }
-    
+
         try {
             const queryStringParams = new URLSearchParams({
                 username: formData.username,
                 email: formData.email,
                 password: formData.password,
             });
-    
+
             const response = await axios.post(`https://localhost:7240/Login/RegisterUser?${queryStringParams.toString()}`);
-    
+
             if (response.data.sucess) {
                 console.log('Registration successful:', response.data);
                 setFormData({
@@ -60,13 +60,13 @@ const Register = () => {
                     confirmPassword: '', // Clear confirm password field
                 });
                 setError(null);
-    
+
                 toast.success('Registration successful!', { autoClose: 5000 });
                 setTimeout(() => {
                     navigate('/');
                 }, 4000);
             } else {
-                console.log('Error message in response:', response.data.errorMessage);
+                console.log('Registration failed. Please try again.');
                 setError(response.data.errorMessage || 'Registration failed. Please try again.');
             }
         } catch (error) {
@@ -76,7 +76,7 @@ const Register = () => {
             setIsSubmitting(false);
         }
     };
-    
+
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
@@ -144,10 +144,11 @@ const Register = () => {
                             </button>
                         </div>
                     </form>
+                    {error && <div className="text-red-500 text-large text-center">{error}</div>}
                     <div className="text-sm text-center">
                         <p className="font-medium text-white">Already have an account? <a href="/" className="text-indigo-600 hover:text-indigo-500">Log in here</a></p>
                     </div>
-                    {error && <div className="text-red-500 mt-4">{error}</div>}
+
                 </div>
             </div>
             <ToastContainer />

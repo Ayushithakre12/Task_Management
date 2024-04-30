@@ -18,7 +18,7 @@ const EditData = ({ task, onClose, onUpdate, onAdd }) => {
 
     const fetchCollaborators = async () => {
         try {
-            const response = await axios.get('https://localhost:7240/Task/RetriveAllUser',{withCredentials: true});
+            const response = await axios.get('https://localhost:7240/Task/RetriveAllUser', { withCredentials: true });
             if (response.data && response.data.allUser) {
                 setCollaborators(response.data.allUser);
             } else {
@@ -39,8 +39,8 @@ const EditData = ({ task, onClose, onUpdate, onAdd }) => {
                 name,
                 description,
                 priority,
-                isCompleted: isCompleted,
-                collaborators: selectedCollaborators // Pass selected collaborators directly
+                iscompleted: isCompleted,
+                collaborators: selectedCollaborators
             };
             await onUpdate(updatedTask);
             toast.success('Task updated successfully!', { autoClose: 5000 });
@@ -51,14 +51,14 @@ const EditData = ({ task, onClose, onUpdate, onAdd }) => {
                 description,
                 priority,
                 iscompleted: isCompleted,
-                collaborators: selectedCollaborators // Pass selected collaborators directly
+                collaborators: selectedCollaborators
             };
             await onAdd(newTask);
             toast.success('New Task added successfully!', { autoClose: 5000 });
         }
         onClose();
     };
-    
+
 
     return (
         <div className="fixed top-0 left-0 w-full h-full flex items-center bg-gray-900 justify-center bg-opacity-75">
